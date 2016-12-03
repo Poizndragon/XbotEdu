@@ -1,47 +1,37 @@
-package xbot.edubot.subsystems.drive;
+package xbot.edubot;
 
-import xbot.common.controls.*;
-import xbot.common.controls.actuators.XSpeedController;
-import xbot.common.controls.sensors.DistanceSensor;
-import xbot.common.injection.wpi_factories.WPIFactory;
-import xbot.edubot.rotation.MockHeadingSensor;
+import org.junit.Test;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import xbot.common.command.BaseCommand;
+import xbot.edubot.subsystems.drive.commands.TankDriveWithJoysticksCommand;
 
-import edu.wpi.first.wpilibj.MockDistanceSensor;
-import edu.wpi.first.wpilibj.SpeedController;
+public class TankDriveTest extends BaseDriveTest {
 
-@Singleton
-public class DriveSubsystem {
-
-	public MockDistanceSensor distanceSensor;
-	public MockHeadingSensor gyro;
-	
-	XSpeedController frontLeft;
-	XSpeedController frontRight;
-	XSpeedController rearLeft;
-	XSpeedController rearRight;
+	@Test
+	public void test() {
+		BaseCommand command = injector.getInstance(TankDriveWithJoysticksCommand.class);
 		
-	@Inject
-	public DriveSubsystem(WPIFactory factory) {
-		// instantiate speed controllers and sensors here, save them as class members
-		distanceSensor = new MockDistanceSensor();
-		gyro = new MockHeadingSensor();
+		// Call the TankDriveWithJoysticksCommand initialize once
+		command.initialize();
 		
-		frontLeft = factory.getSpeedController(1);
-		rearLeft = factory.getSpeedController(3);
-		frontRight = factory.getSpeedController(2);
-		rearRight = factory.getSpeedController(4);
-	}
-	
-	public void tankDrive(double leftPower, double rightPower) {
-		// You'll need to take these power values and assign them to all of the motors. As
-		// an example, here is some code that has the frontLeft motor to spin according to
-		// the value of leftPower:
-		frontLeft.set(leftPower);
-		frontRight.set(rightPower);
-		rearLeft.set(leftPower);
-		rearRight.set(rightPower);
+		// Call execute without having moved the joysticks yet. This means the joystick axes are at 0,
+		// so the motors should be at 0 power (stopped).
+		command.execute();
+		assertDrive(0, 0, "Expect Motors initially 0");
+		
+		// Push the left and right joystick to fully forward (+1). This should make all motors go to +1,
+		// also knows as "full forward"
+		left.setY(1.0);
+		right.setY(1.0);
+		command.execute();
+		assertDrive(1.0,1.0, "Expect Motors are all forward when both joysticks are completely forward");
+		
+		// Push the left joystick fully backward (-1) and the right joystick fully forward (1). This
+		// would make a tank turn!
+		left.setY(-1.0);
+		right.setY(1.0);
+		command.execute();
+		assertDrive(-1.0,1.0, "Expect Motors are all forward when both joysticks are completely forward");
+		
 	}
 }
