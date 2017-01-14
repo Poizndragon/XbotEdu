@@ -33,13 +33,13 @@ public class TurnLeft90DegreesCommandTest extends BaseOrientationEngineTest impl
     @Override
     public void invokeOrientationTest(OrientationTest test) {
         switch (test) {
-            case GO_LEFT_90_FROM_0:
+            case GO_RIGHT_90_FROM_0:
                 this.goLeft90FromStart();
                 break;
             case GO_LEFT_90_FROM_NEG_90:
                 this.goLeft90FromNeg90();
                 break;
-            case GO_LEFT_90_FROM_NEG_150:
+            case GO_RIGHT_90_FROM_NEG_150:
                 this.goLeft90FromNeg150();
                 break;
             case GO_LEFT_90_FROM_150:

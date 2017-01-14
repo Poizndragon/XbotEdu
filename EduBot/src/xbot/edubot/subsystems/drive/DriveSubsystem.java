@@ -22,6 +22,8 @@ public class DriveSubsystem {
 	XSpeedController frontRight;
 	XSpeedController rearLeft;
 	XSpeedController rearRight;
+	
+	boolean fullPower = true;
 		
 	@Inject
 	public DriveSubsystem(WPIFactory factory) {
@@ -35,13 +37,34 @@ public class DriveSubsystem {
 		rearRight = factory.getSpeedController(4);
 	}
 	
+	public double getPosition(){
+		return distanceSensor.getDistance();
+	}
+	
+	
 	public void tankDrive(double leftPower, double rightPower) {
 		// You'll need to take these power values and assign them to all of the motors. As
 		// an example, here is some code that has the frontLeft motor to spin according to
 		// the value of leftPower:
-		frontLeft.set(leftPower);
-		frontRight.set(rightPower);
-		rearLeft.set(leftPower);
-		rearRight.set(rightPower);
+		if (fullPower == true){
+			frontLeft.set(leftPower);
+			frontRight.set(rightPower);
+			rearLeft.set(leftPower);
+			rearRight.set(rightPower);
+		}
+		if (fullPower == false)
+			frontLeft.set(leftPower);
+			frontRight.set(rightPower);
+			rearLeft.set(leftPower);
+			rearRight.set(rightPower);
+	}
+	
+	public void changePower() {
+		if (fullPower == true){
+			fullPower = false;
+		}
+		if (fullPower == false){
+			fullPower = true;
+		}
 	}
 }
