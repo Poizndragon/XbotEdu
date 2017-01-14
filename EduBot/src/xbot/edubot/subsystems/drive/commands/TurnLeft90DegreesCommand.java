@@ -13,38 +13,48 @@ public class TurnLeft90DegreesCommand extends BaseCommand {
 	
 	DriveSubsystem drive;
 	public MockHeadingSensor gyro;
-	XSpeedController frontLeft;
-	XSpeedController frontRight;
-	XSpeedController rearLeft;
-	XSpeedController rearRight;
 	
-	boolean fullPower = true;
-	
-	public TurnLeft90DegreesCommand(WPIFactory factory) {
-	gyro = new MockHeadingSensor();
-	
-	frontLeft = factory.getSpeedController(1);
-	rearLeft = factory.getSpeedController(3);
-	frontRight = factory.getSpeedController(2);
-	rearRight = factory.getSpeedController(4);
-}
+	double target;
+	double previousYaw;
+		
 	
 	@Inject
 	public TurnLeft90DegreesCommand(DriveSubsystem driveSubsystem) {
 		this.drive = driveSubsystem;
+		gyro = drive.gyro;
+
 	}
 	
 	@Override
 	public void initialize() {
+		double yaw = drive.gyro.getYaw();
+		target = yaw + 90;
+		previousYaw = yaw;
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
+		double yaw = drive.gyro.getYaw();
+		double error = target - yaw;
+		double velocity = (yaw - previousYaw);
+		double power = .25 * error - 1 * velocity;
+		
+		drive.tankDrive(-power,power);
 	}
-
+	
+	public boolean isFinished() {
+		double yaw = drive.gyro.getYaw();
+		if ((Math.abs(yaw - target) < 2)
+		&&	(Math.abs(yaw - previousYaw) < 0.1))
+		return true;
+		else
+		{
+			previousYaw = yaw;
+			return false;
+		}
+	}
 
 
 }

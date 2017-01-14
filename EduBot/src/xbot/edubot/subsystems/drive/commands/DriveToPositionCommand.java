@@ -30,7 +30,7 @@ public class DriveToPositionCommand extends BaseCommand {
 	@Override
 	public void execute() {
 		if (drive.getPosition() < target)
-		drive.tankDrive(1, 1);
+			drive.tankDrive(1, 1);
 		else
 			drive.tankDrive(-1, -1);
 		
