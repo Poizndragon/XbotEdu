@@ -39,8 +39,7 @@ public class TurnLeft90DegreesCommand extends BaseCommand {
 		double yaw = drive.gyro.getYaw();
 		double error = target - yaw;
 		double velocity = (yaw - previousYaw);
-		double power = .13 * error ; //- 1 * velocity;
-		System.out.println("error =" + error);
+		double power = .25 * error - 1 * velocity;
 		
 		drive.tankDrive(-power,power);
 	}
